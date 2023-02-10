@@ -1,2 +1,4 @@
+.project
 tgz/*.tgz
 installations/*/*
+rendered-config/*/*
