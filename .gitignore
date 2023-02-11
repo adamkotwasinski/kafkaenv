@@ -1,4 +1,5 @@
 .project
 tgz/*.tgz
+tgz/*.jar
 installations/*/*
 rendered-config/*/*
