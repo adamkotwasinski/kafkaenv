@@ -19,8 +19,8 @@ if [ ! -f "${LOG_DIR}" ]; then
     mkdir -p "${LOG_DIR}"
 fi
 
-TYPES=(default envoy mesh)
-COUNTS=(3 1 3)
+TYPES=(default envoy mesh mirror)
+COUNTS=(3 1 3 1)
 
 for idx in ${!TYPES[@]}; do
     TYPE=${TYPES[$idx]}

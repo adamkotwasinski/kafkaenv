@@ -22,6 +22,9 @@ fi
 if [ "mesh" == ${TYPE} ]; then
     OFFSET=400
 fi
+if [ "mirror" == ${TYPE} ]; then
+    OFFSET=600
+fi
 
 # Kafka listener port.
 KAFKA_PORT=$((9091 + ${OFFSET} + ${ID}))
