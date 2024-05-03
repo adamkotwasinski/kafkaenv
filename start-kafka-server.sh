@@ -31,9 +31,9 @@ KAFKA_PORT=$((9091 + ${OFFSET} + ${ID}))
 
 # Kafka advertised listener port.
 if [ "envoy" == ${TYPE} ]; then
-	ADV_PORT=$((10000 + 9091 + ${ID}))
+    ADV_PORT=$((10000 + 9091 + ${ID}))
 else
-	ADV_PORT=${KAFKA_PORT}
+    ADV_PORT=${KAFKA_PORT}
 fi
 
 # Kafka data directory.
@@ -41,11 +41,11 @@ DATA_DIR="${DATA_DIR_PARENT}/${TYPE}-${ID}"
 
 # Render the config.
 sed \
-	-e "s/__ID__/${ID}/g" \
-	-e "s/__PORT__/${KAFKA_PORT}/g" \
-	-e "s/__ADV_PORT__/${ADV_PORT}/g" \
-	-e "s+__DATA_DIR__+${DATA_DIR}+g" \
-	config-templates/server-${TYPE}-0.properties.template > "${TARGET_DIR}/server-${TYPE}-${ID}.properties"
+    -e "s/__ID__/${ID}/g" \
+    -e "s/__PORT__/${KAFKA_PORT}/g" \
+    -e "s/__ADV_PORT__/${ADV_PORT}/g" \
+    -e "s+__DATA_DIR__+${DATA_DIR}+g" \
+    config-templates/server-${TYPE}-0.properties.template > "${TARGET_DIR}/server-${TYPE}-${ID}.properties"
 echo "Listening on port ${KAFKA_PORT}, advertised on ${ADV_PORT}"
 
 # JMX port.
