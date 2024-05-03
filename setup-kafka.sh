@@ -19,12 +19,37 @@ if [ ! -f "${LOG_DIR}" ]; then
     mkdir -p "${LOG_DIR}"
 fi
 
-TYPES=(default envoy mesh mirror)
-COUNTS=(3 1 3 1)
+TYPE=${2:-"all"}
+case ${TYPE} in
+    "default")
+        TYPES=("default:3")
+        ;;
+    "envoy")
+        TYPES=("envoy:1")
+        ;;
+    "mesh")
+        TYPES=("mesh:3")
+        ;;
+    "mirror")
+        TYPES=("mirror:1")
+        ;;
+    "all")
+        TYPES=("default:3" "envoy:1" "mesh:3" "mirror:1")
+        ;;
+    "*")
+        TYPES=("default:3" "envoy:1" "mesh:3" "mirror:1")
+        ;;
+esac
 
-for idx in ${!TYPES[@]}; do
-    TYPE=${TYPES[$idx]}
-    COUNT=${COUNTS[$idx]}
+echo "Starting: "
+for el in "${TYPES[@]}" ; do
+    echo -n "${el} "
+done
+echo
+
+for el in ${TYPES[@]}; do
+    TYPE=${el%%:*}
+    COUNT=${el#*:}
     for id in $(seq ${COUNT}); do
         echo "Starting server ${TYPE}/${id}"
         ./start-kafka-server.sh \
