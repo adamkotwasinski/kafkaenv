@@ -21,7 +21,7 @@ fi
 
 TYPE=${2:-"all"}
 case ${TYPE} in
-    "default")
+    "basic")
         TYPES=("default:3")
         ;;
     "envoy")
@@ -31,13 +31,13 @@ case ${TYPE} in
         TYPES=("mesh:3")
         ;;
     "mirror")
-        TYPES=("mirror:1")
+        TYPES=("default:3 mirror:1")
         ;;
     "all")
         TYPES=("default:3" "envoy:1" "mesh:3" "mirror:1")
         ;;
     "*")
-        TYPES=("default:3" "envoy:1" "mesh:3" "mirror:1")
+        TYPES=("default:3" "mirror:1")
         ;;
 esac
 
@@ -61,3 +61,18 @@ for el in ${TYPES[@]}; do
             "${LOG_DIR}"
     done
 done
+
+HAS_MIRROR_MAKER="false"
+for el in ${TYPES[@]}; do
+    TYPE=${el%%:*}
+    if [[ "${TYPE}" == "mirror" ]]; then
+        HAS_MIRROR_MAKER="true"
+    fi
+done
+
+if [[ "${HAS_MIRROR_MAKER}" == "true" ]]; then
+    echo "Starting mirror-maker"
+    ./start-mirror-maker.sh \
+        "${KAFKA_VERSION}" \
+        "${LOG_DIR}"
+fi
