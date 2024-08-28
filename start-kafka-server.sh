@@ -1,18 +1,18 @@
 #!/bin/bash -e
 
 if [ $# -lt 6 ]; then
-	echo "Illegal number of parameters, need VERSION TARGET_DIR ID TYPE DATA_DIR_PARENT LOG_DIR"
-	exit 1
+    echo "Illegal number of parameters, need KAFKA_VERSION CONFIG_TARGET_DIR ID TYPE DATA_DIR_PARENT LOG_DIR"
+    exit 1
 fi
 
-VERSION=$1
-TARGET_DIR=$2
-ID=$3
+KAFKA_VERSION=${1}
+CONFIG_TARGET_DIR=${2}
+ID=${3}
 TYPE=${4}
 DATA_DIR_PARENT=${5}
 LOG_DIR=${6}
 
-echo "Starting server ${VERSION} ${TARGET_DIR} ${ID} ${TYPE} ${DATA_DIR_PARENT} ${LOG_DIR}"
+echo "Starting server ${KAFKA_VERSION} ${CONFIG_TARGET_DIR} ${ID} ${TYPE} ${DATA_DIR_PARENT} ${LOG_DIR}"
 
 # Port offsets.
 OFFSET=0
@@ -45,7 +45,7 @@ sed \
     -e "s/__PORT__/${KAFKA_PORT}/g" \
     -e "s/__ADV_PORT__/${ADV_PORT}/g" \
     -e "s+__DATA_DIR__+${DATA_DIR}+g" \
-    config-templates/server-${TYPE}-0.properties.template > "${TARGET_DIR}/server-${TYPE}-${ID}.properties"
+    config-templates/server-${TYPE}-0.properties.template > "${CONFIG_TARGET_DIR}/server-${TYPE}-${ID}.properties"
 echo "Listening on port ${KAFKA_PORT}, advertised on ${ADV_PORT}"
 
 # JMX port.
@@ -81,8 +81,8 @@ fi
 # Configure logs.
 export EXTRA_ARGS="-Dlog4j.configuration=file:../../log4j.properties -Dkafka.logs.dir=${LOG_DIR} -Dlogsuffix=${TYPE}-${ID}"
 
-cd installations/${VERSION}
+cd installations/${KAFKA_VERSION}
 nohup \
     bin/kafka-server-start.sh \
-    ../../rendered-config/${VERSION}/server-${TYPE}-${ID}.properties \
+    $(realpath ../../rendered-config/${KAFKA_VERSION}/server-${TYPE}-${ID}.properties) \
     </dev/null >/dev/null 2>&1 &
