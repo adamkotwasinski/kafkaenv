@@ -20,6 +20,7 @@ if [ ! -f "${LOG_DIR}" ]; then
 fi
 
 TYPE=${2:-"all"}
+START_MIRROR_MAKER="false"
 case ${TYPE} in
     "basic")
         TYPES=("default:3")
@@ -32,20 +33,21 @@ case ${TYPE} in
         ;;
     "mirror")
         TYPES=("default:3 mirror:1")
+        START_MIRROR_MAKER="true"
+        ;;
+    "twoclusters")
+        TYPES=("default:3 mirror:1")
         ;;
     "all")
         TYPES=("default:3" "envoy:1" "mesh:3" "mirror:1")
+        START_MIRROR_MAKER="true"
         ;;
     "*")
         TYPES=("default:3" "mirror:1")
         ;;
 esac
 
-echo "Starting: "
-for el in "${TYPES[@]}" ; do
-    echo -n "${el} "
-done
-echo
+echo "=== STARTING CLUSTERS: ${TYPES[*]} ==="
 
 for el in ${TYPES[@]}; do
     TYPE=${el%%:*}
@@ -62,15 +64,7 @@ for el in ${TYPES[@]}; do
     done
 done
 
-HAS_MIRROR_MAKER="false"
-for el in ${TYPES[@]}; do
-    TYPE=${el%%:*}
-    if [[ "${TYPE}" == "mirror" ]]; then
-        HAS_MIRROR_MAKER="true"
-    fi
-done
-
-if [[ "${HAS_MIRROR_MAKER}" == "true" ]]; then
+if [[ "${START_MIRROR_MAKER}" == "true" ]]; then
     echo "Starting mirror-maker"
     ./start-mirror-maker.sh \
         "${KAFKA_VERSION}" \
