@@ -1,5 +1,12 @@
 #!/bin/bash -e
 
+# Downloads (unless already in tgz/) and unpacks a Kafka distribution, adding the MX4J jar to it.
+#
+# Usage: ./download-and-unpack-kafka.sh KAFKA_VERSION
+#
+# KAFKA_VERSION
+#   Version to fetch (Scala 2.13 build) from archive.apache.org; unpacked into installations/<KAFKA_VERSION>.
+
 KAFKA_VERSION=$1
 # Some older versions of Kafka might not work as they use older Scala (might want to add 2nd param and link them if I ever want to use e.g. 1.1.1).
 KAFKA_TARFILE="kafka_2.13-${KAFKA_VERSION}.tgz"

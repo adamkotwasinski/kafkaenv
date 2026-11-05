@@ -1,6 +1,21 @@
 #!/bin/bash -e
 
-DEFAULT_KAFKA_VERSION=3.8.0
+# Starts local Kafka clusters (downloading the Kafka distribution if needed).
+#
+# Usage: ./setup-kafka.sh [KAFKA_VERSION] [TYPE]
+#
+# KAFKA_VERSION (optional, default: DEFAULT_KAFKA_VERSION below)
+#   Kafka version to start, e.g. 3.8.0. Versions below 4 use ZooKeeper, 4 and above use KRaft.
+# TYPE (optional, default: all)
+#   Which clusters to start ('type:N' means N servers of that type):
+#     basic       - default:3
+#     envoy       - envoy:1
+#     mesh        - mesh:3 (3 independent single-node clusters)
+#     mirror      - default:3, mirror:1, and mirror-maker (Kafka 3.x only)
+#     twoclusters - default:3, mirror:1, without mirror-maker
+#     all         - default:3, envoy:1, mesh:3, mirror:1, and mirror-maker (Kafka 3.x only)
+
+DEFAULT_KAFKA_VERSION=4.4.0
 KAFKA_VERSION=${1:-${DEFAULT_KAFKA_VERSION}}
 
 echo "Using Kafka ${KAFKA_VERSION}"
@@ -60,7 +75,8 @@ for el in ${TYPES[@]}; do
             "${id}" \
             "${TYPE}" \
             "${DATA_DIR}" \
-            "${LOG_DIR}"
+            "${LOG_DIR}" \
+            "${COUNT}"
     done
 done
 
