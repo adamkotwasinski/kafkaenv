@@ -1,0 +1,107 @@
+Configuration:
+  Properties:
+    Property:
+      - name: "logPattern"
+        value: "[%d] %p %m (%c)%n"
+
+  Appenders:
+    RollingFile:
+      - name: KafkaAppender
+        fileName: "${sys:kafka.logs.dir}/server-${sys:logsuffix}.log"
+        filePattern: "${sys:kafka.logs.dir}/server-${sys:logsuffix}.log.%d{yyyy-MM-dd}"
+        PatternLayout:
+          pattern: "${logPattern}"
+        TimeBasedTriggeringPolicy:
+          modulate: true
+          interval: 1
+      - name: StateChangeAppender
+        fileName: "${sys:kafka.logs.dir}/state-change-${sys:logsuffix}.log"
+        filePattern: "${sys:kafka.logs.dir}/state-change-${sys:logsuffix}.log.%d{yyyy-MM-dd}"
+        PatternLayout:
+          pattern: "${logPattern}"
+        TimeBasedTriggeringPolicy:
+          modulate: true
+          interval: 1
+      - name: RequestAppender
+        fileName: "${sys:kafka.logs.dir}/kafka-request-${sys:logsuffix}.log"
+        filePattern: "${sys:kafka.logs.dir}/kafka-request-${sys:logsuffix}.log.%d{yyyy-MM-dd}"
+        PatternLayout:
+          pattern: "${logPattern}"
+        TimeBasedTriggeringPolicy:
+          modulate: true
+          interval: 1
+      - name: CleanerAppender
+        fileName: "${sys:kafka.logs.dir}/log-cleaner-${sys:logsuffix}.log"
+        filePattern: "${sys:kafka.logs.dir}/log-cleaner-${sys:logsuffix}.log.%d{yyyy-MM-dd}"
+        PatternLayout:
+          pattern: "${logPattern}"
+        TimeBasedTriggeringPolicy:
+          modulate: true
+          interval: 1
+      - name: ControllerAppender
+        fileName: "${sys:kafka.logs.dir}/controller-${sys:logsuffix}.log"
+        filePattern: "${sys:kafka.logs.dir}/controller-${sys:logsuffix}.log.%d{yyyy-MM-dd}"
+        PatternLayout:
+          pattern: "${logPattern}"
+        TimeBasedTriggeringPolicy:
+          modulate: true
+          interval: 1
+      - name: AuthorizerAppender
+        fileName: "${sys:kafka.logs.dir}/authorizer-${sys:logsuffix}.log"
+        filePattern: "${sys:kafka.logs.dir}/authorizer-${sys:logsuffix}.log.%d{yyyy-MM-dd}"
+        PatternLayout:
+          pattern: "${logPattern}"
+        TimeBasedTriggeringPolicy:
+          modulate: true
+          interval: 1
+
+  Loggers:
+    Root:
+      level: INFO
+      AppenderRef:
+        - ref: KafkaAppender
+    Logger:
+      - name: kafka
+        level: INFO
+      - name: org.apache.kafka
+        level: INFO
+      - name: kafka.request.logger
+        level: INFO
+        additivity: false
+        AppenderRef:
+          ref: RequestAppender
+      - name: kafka.network.RequestChannel$
+        level: WARN
+        additivity: false
+        AppenderRef:
+          ref: RequestAppender
+      - name: org.apache.kafka.controller
+        level: INFO
+        additivity: false
+        AppenderRef:
+          ref: ControllerAppender
+      - name: org.apache.kafka.storage.internals.log.LogCleaner
+        level: INFO
+        additivity: false
+        AppenderRef:
+          ref: CleanerAppender
+      - name: org.apache.kafka.storage.internals.log.LogCleaner$CleanerThread
+        level: INFO
+        additivity: false
+        AppenderRef:
+          ref: CleanerAppender
+      - name: org.apache.kafka.storage.internals.log.Cleaner
+        level: INFO
+        additivity: false
+        AppenderRef:
+          ref: CleanerAppender
+      - name: state.change.logger
+        level: TRACE
+        additivity: false
+        AppenderRef:
+          ref: StateChangeAppender
+      - name: kafka.authorizer.logger
+        level: INFO
+        additivity: false
+        AppenderRef:
+          ref: AuthorizerAppender
